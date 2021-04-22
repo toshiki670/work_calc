@@ -30,7 +30,7 @@ fn main() {
 
   assert_eq!(sum_hour, portal_sum + gw_sum + service_sum, "計算結果と合計時間が異なる。");
 
-  print_worktime("SBN_クラウドポータルv1.24開発", &portal, &portal_sum);
-  print_worktime("SBN_クラウドGW_v1.24開発     ", &gw, &gw_sum);
-  print_worktime("SBNサービス運営              ", &service, &service_sum);
+  print_worktime("SBN_クラウドポータルv1.24開発     ", &portal, &portal_sum);
+  print_worktime("SBN_クラウドGW_v1.24開発          ", &gw, &gw_sum);
+  print_worktime("SBNサービス運営 MC運用業務（業託）", &service, &service_sum);
 }
