@@ -1,6 +1,6 @@
 [package]
 name = "man_hour"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Toshiki.Kawazoe <toshiki.kawazoe@sony.com>"]
 edition = "2018"
 
