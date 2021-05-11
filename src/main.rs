@@ -1,15 +1,6 @@
 use proconio::input;
+mod print;
 
-fn print_worktime(title: &str, per: &f32, sum: &f32) {
-  // 一日の労働時間
-  let man_day: f32 = 7.75;
-  println!("{title} ({per}): 累計 {sum:2.2} 時間, {day:2.0} 日間と{hour:2.2} 時間",
-            title = title,
-            per = per,
-            sum = sum,
-            day = sum / man_day,
-            hour = sum % man_day);
-}
 
 fn main() {
   input! {
@@ -30,7 +21,7 @@ fn main() {
 
   assert_eq!(sum_hour, portal_sum + gw_sum + service_sum, "計算結果と合計時間が異なる。");
 
-  print_worktime("191852-23 SBNサービス運営 MC運用業務（業託）", &service, &service_sum);
-  print_worktime("206174-01 SBN_クラウドポータルv1.24開発     ", &portal, &portal_sum);
-  print_worktime("206175-01 SBN_クラウドGW_v1.24開発          ", &gw, &gw_sum);
+  print::worktime("191852-23 SBNサービス運営 MC運用業務（業託）", &service, &service_sum);
+  print::worktime("206174-01 SBN_クラウドポータルv1.24開発     ", &portal, &portal_sum);
+  print::worktime("206175-01 SBN_クラウドGW_v1.24開発          ", &gw, &gw_sum);
 }
