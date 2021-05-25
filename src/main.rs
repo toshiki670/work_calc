@@ -21,7 +21,7 @@ fn main() {
 
   assert_eq!(sum_hour, portal_sum + gw_sum + service_sum, "計算結果と合計時間が異なる。");
 
+  print::worktime("191852-24", &service, &service_sum, "SBNサービス運営_2021年05月/MC運用業務（業託）MC運用業務（業託） ※25日までに入力");
   print::worktime("206174-01", &portal , &portal_sum , "SBN_クラウドポータルv1.24開発");
   print::worktime("206175-01", &gw     , &gw_sum     , "SBN_クラウドGW_v1.24開発");
-  print::worktime("191852-24", &service, &service_sum, "SBNサービス運営 MC運用業務（業託） 25日までに入力");
 }
