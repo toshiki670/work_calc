@@ -3,6 +3,8 @@ mod print;
 
 
 fn main() {
+  println!("Enter man hour:");
+
   input! {
     sum_hour: f32,
   }
