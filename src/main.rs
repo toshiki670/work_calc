@@ -39,7 +39,7 @@ fn main() {
 
   let printer = print::Printer::new(sum_hour, work_days);
 
-  printer.worktime("191852-24", &service, &service_sum, "SBNサービス運営_2021年05月/MC運用業務（業託）MC運用業務（業託） ※25日までに入力");
-  printer.worktime("206174-01", &portal , &portal_sum , "SBN_クラウドポータルv1.24開発");
+  printer.worktime("191852-25", &service, &service_sum, "SBNサービス運営_2021年06月 / MC運用業務（業託）MC運用業務（業託） ※25日までに入力すること");
   printer.worktime("206175-01", &gw     , &gw_sum     , "SBN_クラウドGW_v1.24開発");
+  printer.worktime("210915-01", &portal , &portal_sum , "SBN_クラウドポータルv1.25開発");
 }
