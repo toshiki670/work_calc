@@ -1,5 +1,7 @@
 use proconio::input;
 mod print;
+mod work_hour;
+use crate::work_hour::WorkHour;
 
 
 fn main() {
@@ -7,7 +9,10 @@ fn main() {
   input! {
     sum_hour: f32,
   }
-  assert!(140. <= sum_hour, "一人月の労働時間は140時間以上にしてください。");
+  let sum_hour = WorkHour::new(sum_hour);
+
+  assert!(140. <= sum_hour.raw(), "一人月の労働時間は140時間以上にしてください。");
+  assert!(0. >= sum_hour.reminder(), "{:.2}時間余分です。労働時間は15分刻みで入力してください。", sum_hour.reminder());
 
   println!("Enter work days:");
   input! {
@@ -18,17 +23,19 @@ fn main() {
 
   // SBN_クラウドポータルv1.24開発
   let portal: f32 = 0.5;
-  let portal_sum: f32 = sum_hour * portal;
+  let portal_sum = sum_hour * portal;
 
   // SBN_クラウドGW
   let gw: f32 = 0.2;
-  let gw_sum: f32 = sum_hour * gw;
+  let gw_sum = sum_hour * gw;
 
   // SBNサービス運営
   let service: f32 = 0.3;
-  let service_sum: f32 = sum_hour * service;
+  let service_sum = sum_hour * service;
 
   assert_eq!(sum_hour, portal_sum + gw_sum + service_sum, "計算結果と合計時間が異なる。");
+
+  println!("プロジェクト間分割不可能時間: {:.2} 時間", sum_hour - portal_sum.hour() - gw_sum.hour() - service_sum.hour());
 
   let printer = print::Printer::new(sum_hour, work_days);
 
