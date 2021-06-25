@@ -1,36 +1,45 @@
 use proconio::input;
+mod print;
+mod work_hour;
+use crate::work_hour::WorkHour;
 
-fn print_worktime(title: &str, per: &f32, sum: &f32) {
-  // 一日の労働時間
-  let man_day: f32 = 7.75;
-  println!("{title} ({per}): 累計 {sum:2.2} 時間, {day:2.0} 日間と{hour:2.2} 時間",
-            title = title,
-            per = per,
-            sum = sum,
-            day = sum / man_day,
-            hour = sum % man_day);
-}
 
 fn main() {
+  println!("Enter man hour:");
   input! {
     sum_hour: f32,
   }
+  let sum_hour = WorkHour::new(sum_hour);
+
+  assert!(140. <= sum_hour.raw(), "一人月の労働時間は140時間以上にしてください。");
+  assert!(0. >= sum_hour.reminder(), "{:.2}時間余分です。労働時間は15分刻みで入力してください。", sum_hour.reminder());
+
+  println!("Enter work days:");
+  input! {
+    work_days: u8,
+  }
+  assert!(work_days <= 31, "31日以上入力しないでください。");
+
 
   // SBN_クラウドポータルv1.24開発
   let portal: f32 = 0.5;
-  let portal_sum: f32 = sum_hour * portal;
+  let portal_sum = sum_hour * portal;
 
   // SBN_クラウドGW
   let gw: f32 = 0.2;
-  let gw_sum: f32 = sum_hour * gw;
+  let gw_sum = sum_hour * gw;
 
   // SBNサービス運営
   let service: f32 = 0.3;
-  let service_sum: f32 = sum_hour * service;
+  let service_sum = sum_hour * service;
 
   assert_eq!(sum_hour, portal_sum + gw_sum + service_sum, "計算結果と合計時間が異なる。");
 
-  print_worktime("191852-23 SBNサービス運営 MC運用業務（業託）", &service, &service_sum);
-  print_worktime("206174-01 SBN_クラウドポータルv1.24開発     ", &portal, &portal_sum);
-  print_worktime("206175-01 SBN_クラウドGW_v1.24開発          ", &gw, &gw_sum);
+  println!("プロジェクト間分割不可能時間: {:.2} 時間", sum_hour - portal_sum.hour() - gw_sum.hour() - service_sum.hour());
+
+  let printer = print::Printer::new(sum_hour, work_days);
+
+  printer.worktime("191852-24", &service, &service_sum, "SBNサービス運営_2021年05月/MC運用業務（業託）MC運用業務（業託） ※25日までに入力");
+  printer.worktime("206174-01", &portal , &portal_sum , "SBN_クラウドポータルv1.24開発");
+  printer.worktime("206175-01", &gw     , &gw_sum     , "SBN_クラウドGW_v1.24開発");
 }
