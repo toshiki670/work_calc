@@ -12,6 +12,7 @@ fn main() {
   let sum_hour = WorkHour::new(sum_hour);
 
   assert!(140. <= sum_hour.raw(), "一人月の労働時間は140時間以上にしてください。");
+  assert!(0. >= sum_hour.reminder(), "{:.2}時間余分です。労働時間は15分刻みで入力してください。", sum_hour.reminder());
 
   println!("Enter work days:");
   input! {
