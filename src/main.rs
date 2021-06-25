@@ -35,6 +35,8 @@ fn main() {
 
   assert_eq!(sum_hour, portal_sum + gw_sum + service_sum, "計算結果と合計時間が異なる。");
 
+  println!("プロジェクト間分割不可能時間: {:.2} 時間", sum_hour - portal_sum.hour() - gw_sum.hour() - service_sum.hour());
+
   let printer = print::Printer::new(sum_hour, work_days);
 
   printer.worktime("191852-24", &service, &service_sum, "SBNサービス運営_2021年05月/MC運用業務（業託）MC運用業務（業託） ※25日までに入力");
