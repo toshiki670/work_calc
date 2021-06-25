@@ -27,21 +27,4 @@ impl Printer {
               remark = remark
             );
   }
-
-  fn calc_work_hours_per_day(sum_hour: f32, work_days: u8) -> f32 {
-    let integer_time: u32 = sum_hour as u32 / work_days as u32;
-    let surplus_time: f32 = sum_hour as f32 % work_days as f32;
-    let quarter_hour: f32 = 1. / 0.25;
-    let add_time: f32 = ((surplus_time * quarter_hour) as u32 / work_days as u32) as f32 / quarter_hour;
-
-    integer_time as f32 + add_time
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  #[test]
-  fn be_valid_calc_work_hours_per_day() {
-    assert_eq!(super::Printer::calc_work_hours_per_day(140., 16), 8.75);
-  }
 }
