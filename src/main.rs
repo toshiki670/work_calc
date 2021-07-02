@@ -1,7 +1,6 @@
 use proconio::input;
 
 mod plan;
-mod print;
 mod work_hour;
 use crate::work_hour::WorkHour;
 
