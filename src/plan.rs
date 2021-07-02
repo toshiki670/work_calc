@@ -4,19 +4,19 @@ use crate::work_hour::WorkHour;
 
 pub struct Plan {
   number: &'static str,
-  percent: f32,
+  percent: f64,
   total_hour: WorkHour,
-  work_hours_per_day: f32,
+  work_hours_per_day: f64,
   remark: &'static str,
 }
 
 impl Plan {
-  pub fn new(number: &'static str, percent: f32, sum_hour: WorkHour, work_days: u8, remark: &'static str) -> Self {
+  pub fn new(number: &'static str, percent: f64, sum_hour: WorkHour, work_days: u8, remark: &'static str) -> Self {
     Plan {
       number: number,
       percent: percent,
       total_hour: sum_hour * percent,
-      work_hours_per_day: (sum_hour / work_days as f32).hour(),
+      work_hours_per_day: (sum_hour / work_days as f64).hour(),
       remark: remark,
     }
   }

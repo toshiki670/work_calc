@@ -8,7 +8,7 @@ use crate::work_hour::WorkHour;
 fn main() {
   println!("Enter man hour:");
   input! {
-    sum_hour: f32,
+    sum_hour: f64,
   }
   let sum_hour = WorkHour::new(sum_hour);
 
@@ -57,7 +57,7 @@ fn main() {
 
   let plan_sum_hour = portal_plan.total_hour().hour() + gw_cloud_plan.total_hour().hour() + service_plan.total_hour().hour();
   println!("プロジェクト間分割不可能時間: {:.2} 時間", sum_hour - plan_sum_hour);
-  println!("一日の基本労働時間: {:.2} 時間", (sum_hour / work_days as f32).hour());
+  println!("一日の基本労働時間: {:.2} 時間", (sum_hour / work_days as f64).hour());
   println!("{}", service_plan);
   println!("{}", gw_cloud_plan);
   println!("{}", portal_plan);

@@ -3,26 +3,26 @@ use std::{fmt, cmp, ops};
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct WorkHour {
   value: i32,
-  reminder: f32,
+  reminder: f64,
 }
 
 impl WorkHour {
-  const QUARTER: f32 = 0.25;
-  pub fn new(hour: f32) -> Self {
+  const QUARTER: f64 = 0.25;
+  pub fn new(hour: f64) -> Self {
     let value: i32 = (hour / WorkHour::QUARTER) as i32;
-    let reminder: f32 = hour % WorkHour::QUARTER;
+    let reminder: f64 = hour % WorkHour::QUARTER;
     Self { value: value, reminder: reminder }
   }
 
-  pub fn raw(&self) -> f32 {
-    self.value as f32 * WorkHour::QUARTER + self.reminder
+  pub fn raw(&self) -> f64 {
+    self.value as f64 * WorkHour::QUARTER + self.reminder
   }
 
-  pub fn hour(&self) -> f32 {
-    self.value as f32 * WorkHour::QUARTER
+  pub fn hour(&self) -> f64 {
+    self.value as f64 * WorkHour::QUARTER
   }
 
-  pub fn reminder(&self) -> f32 {
+  pub fn reminder(&self) -> f64 {
     self.reminder
   }
 }
@@ -33,8 +33,8 @@ impl fmt::Display for WorkHour {
   }
 }
 
-impl cmp::PartialEq<f32> for WorkHour {
-  fn eq(&self, other: &f32) -> bool {
+impl cmp::PartialEq<f64> for WorkHour {
+  fn eq(&self, other: &f64) -> bool {
     let other = WorkHour::new(*other);
     self.value == other.value
   }
@@ -47,9 +47,9 @@ impl ops::Add for WorkHour {
   }
 }
 
-impl ops::Add<f32> for WorkHour {
+impl ops::Add<f64> for WorkHour {
   type Output = Self;
-  fn add(self, other: f32) -> Self::Output {
+  fn add(self, other: f64) -> Self::Output {
     Self::new(self.raw() + other)
   }
 }
@@ -61,9 +61,9 @@ impl ops::Sub for WorkHour {
   }
 }
 
-impl ops::Sub<f32> for WorkHour {
+impl ops::Sub<f64> for WorkHour {
   type Output = Self;
-  fn sub(self, other: f32) -> Self::Output {
+  fn sub(self, other: f64) -> Self::Output {
     Self::new(self.raw() - other)
   }
 }
@@ -75,9 +75,9 @@ impl ops::Mul for WorkHour {
   }
 }
 
-impl ops::Mul<f32> for WorkHour {
+impl ops::Mul<f64> for WorkHour {
   type Output = Self;
-  fn mul(self, other: f32) -> Self::Output {
+  fn mul(self, other: f64) -> Self::Output {
     Self::new(self.raw() * other)
   }
 }
@@ -89,9 +89,9 @@ impl ops::Div for WorkHour {
   }
 }
 
-impl ops::Div<f32> for WorkHour {
+impl ops::Div<f64> for WorkHour {
   type Output = Self;
-  fn div(self, other: f32) -> Self::Output {
+  fn div(self, other: f64) -> Self::Output {
     Self::new(self.raw() / other)
   }
 }
@@ -103,9 +103,9 @@ impl ops::Rem for WorkHour {
   }
 }
 
-impl ops::Rem<f32> for WorkHour {
+impl ops::Rem<f64> for WorkHour {
   type Output = Self;
-  fn rem(self, other: f32) -> Self::Output {
+  fn rem(self, other: f64) -> Self::Output {
     Self::new(self.raw() % other)
   }
 }
