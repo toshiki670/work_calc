@@ -2,6 +2,7 @@ use std::fmt;
 
 use crate::work_hour::WorkHour;
 
+#[derive(Debug)]
 pub struct Plan {
   number: &'static str,
   percent: f64,
@@ -12,11 +13,13 @@ pub struct Plan {
 
 impl Plan {
   pub fn new(number: &'static str, percent: f64, total_hour: WorkHour, work_days: u8, remark: &'static str) -> Self {
+    let work_hours_per_day = (total_hour / work_days as f64).hour();
+
     Plan {
       number: number,
       percent: percent,
       total_hour: total_hour * percent,
-      work_hours_per_day: (total_hour / work_days as f64).hour(),
+      work_hours_per_day: work_hours_per_day,
       remark: remark,
     }
   }

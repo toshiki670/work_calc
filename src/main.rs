@@ -1,4 +1,8 @@
-use proconio::input;
+use std::env;
+
+use clap::App;
+use env_logger;
+use log::{debug, error, Level};
 
 mod plan;
 mod work_hour;
@@ -6,20 +10,47 @@ use crate::work_hour::WorkHour;
 
 
 fn main() {
-  println!("Enter total hour:");
-  input! {
-    total_hour: f64,
-  }
-  let total_hour = WorkHour::new(total_hour);
+  let cli = clap::load_yaml!("cli.yml");
+  let matches = App::from_yaml(cli).get_matches();
 
-  assert!(140. <= total_hour.raw(), "一人月の労働時間は140時間以上にしてください。");
-  assert!(0. >= total_hour.reminder(), "{:.2}時間余分です。労働時間は15分刻みで入力してください。", total_hour.reminder());
-
-  println!("Enter work days:");
-  input! {
-    work_days: u8,
+  if matches.is_present("verbose") {
+    env::set_var("RUST_LOG", Level::Trace.to_string());
   }
-  assert!(work_days <= 31, "31日以上入力しないでください。");
+  env_logger::init();
+
+  // Total hour
+  let raw_total_hour = matches.value_of("total_hour").unwrap();
+  let total_hour = raw_total_hour.parse();
+  if let Err(e) = total_hour {
+    error!("合計時間が誤っています。");
+    error!("数字であることを確認してください: {}.", &raw_total_hour);
+    panic!("ParseError: {}.", e);
+  }
+
+  let total_hour = WorkHour::new(total_hour.unwrap());
+  debug!("total_hour({}): {:?}", &total_hour, &total_hour);
+  if 140. > total_hour.raw() {
+    error!("一人月の労働時間は140時間以上にしてください。");
+    return;
+  } else if 0. < total_hour.reminder() {
+    error!("{:.2}時間余分です。労働時間は15分刻みで入力してください。", total_hour.reminder());
+    return;
+  }
+
+  // Work days
+  let raw_work_days = matches.value_of("work_days").unwrap();
+  let work_days = raw_work_days.parse();
+  if let Err(e) = work_days {
+    error!("労働日数が誤っています。");
+    error!("数字であることを確認してください: {}.", &raw_work_days);
+    panic!("ParseError: {}.", e);
+  }
+  let work_days = work_days.unwrap();
+
+  if work_days > 31 {
+    error!("31日以上入力しないでください。");
+    panic!("work_days({}) exceeded 31.", work_days);
+  }
 
 
   // SBN_クラウドポータルv1.25開発
@@ -30,6 +61,8 @@ fn main() {
     work_days,
     "SBN_クラウドポータルv1.25開発"
   );
+  debug!("portal_plan: {:?}", &portal_plan);
+
 
   // SBN_クラウドGW
   let gw_cloud_plan = plan::Plan::new(
@@ -39,6 +72,7 @@ fn main() {
     work_days,
     "SBN_クラウドGW_v1.24開発"
   );
+  debug!("gw_cloud_plan: {:?}", &gw_cloud_plan);
 
 
   // SBNサービス運営
@@ -49,10 +83,14 @@ fn main() {
     work_days,
     "SBNサービス運営_2021年08月 / MC運用業務（業託）MC運用業務（業託） ※25日までに入力すること"
   );
+  debug!("service_plan: {:?}", &service_plan);
 
 
   let plan_sum = portal_plan.total_hour() + gw_cloud_plan.total_hour() + service_plan.total_hour();
-  assert_eq!(total_hour, plan_sum, "計算結果と合計時間が異なる。");
+  if total_hour != plan_sum {
+    error!("計算結果と合計時間が異なる。");
+    panic!("total_hour({}) and plan_sum({}) are different", total_hour, plan_sum);
+  }
 
 
   println!("一日の基本労働時間: {:.2} 時間", (total_hour / work_days as f64).hour());
