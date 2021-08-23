@@ -2,7 +2,7 @@ use std::env;
 
 use clap::App;
 use env_logger;
-use log::Level;
+use log::{error, Level};
 
 mod plan;
 mod work_hour;
@@ -19,14 +19,37 @@ fn main() {
   env_logger::init();
 
   // Total hour
-  let total_hour = matches.value_of("total_hour").unwrap();
-  let total_hour = WorkHour::new(total_hour.parse().unwrap());
-  assert!(140. <= total_hour.raw(), "一人月の労働時間は140時間以上にしてください。");
-  assert!(0. >= total_hour.reminder(), "{:.2}時間余分です。労働時間は15分刻みで入力してください。", total_hour.reminder());
+  let raw_total_hour = matches.value_of("total_hour").unwrap();
+  let total_hour = raw_total_hour.parse();
+  if let Err(e) = total_hour {
+    error!("合計時間が誤っています。");
+    error!("数字であることを確認してください: {}.", &raw_total_hour);
+    panic!("ParseError: {}.", e);
+  }
+
+  let total_hour = WorkHour::new(total_hour.unwrap());
+  if 140. > total_hour.raw() {
+    error!("一人月の労働時間は140時間以上にしてください。");
+    return;
+  } else if 0. < total_hour.reminder() {
+    error!("{:.2}時間余分です。労働時間は15分刻みで入力してください。", total_hour.reminder());
+    return;
+  }
 
   // Work days
-  let work_days = matches.value_of("work_days").unwrap().parse().unwrap();
-  assert!(work_days <= 31, "31日以上入力しないでください。");
+  let raw_work_days = matches.value_of("work_days").unwrap();
+  let work_days = raw_work_days.parse();
+  if let Err(e) = work_days {
+    error!("労働日数が誤っています。");
+    error!("数字であることを確認してください: {}.", &raw_work_days);
+    panic!("ParseError: {}.", e);
+  }
+  let work_days = work_days.unwrap();
+
+  if work_days > 31 {
+    error!("31日以上入力しないでください。");
+    panic!("work_days({}) exceeded 31.", work_days);
+  }
 
 
   // SBN_クラウドポータルv1.25開発
@@ -59,7 +82,10 @@ fn main() {
 
 
   let plan_sum = portal_plan.total_hour() + gw_cloud_plan.total_hour() + service_plan.total_hour();
-  assert_eq!(total_hour, plan_sum, "計算結果と合計時間が異なる。");
+  if total_hour != plan_sum {
+    error!("計算結果と合計時間が異なる。");
+    panic!("total_hour({}) and plan_sum({}) are different", total_hour, plan_sum);
+  }
 
 
   println!("一日の基本労働時間: {:.2} 時間", (total_hour / work_days as f64).hour());
