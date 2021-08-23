@@ -38,13 +38,13 @@ impl fmt::Display for Plan {
     let rem_hour = self.total_hour.hour() - (day * hour);
 
     write!(f, "{num} ({per}%): 累計 {total:2.2} 時間, 一日 {hour:2.2} 時間, {day:2.0} 日間, 余り {rem_hour:2.2} 時間 : {remark}",
-     num = self.number,
-     per = self.percent,
-     total = self.total_hour,
-     hour = hour,
-     day = day,
-     rem_hour = rem_hour,
-     remark = self.remark
-   )
+      num = self.number,
+      per = self.percent,
+      total = self.total_hour,
+      hour = hour,
+      day = day,
+      rem_hour = rem_hour,
+      remark = self.remark
+    )
   }
 }
