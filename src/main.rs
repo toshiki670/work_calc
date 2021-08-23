@@ -55,10 +55,16 @@ fn main() {
   assert_eq!(sum_hour, plan_sum, "計算結果と合計時間が異なる。");
 
 
-  let plan_sum_hour = portal_plan.total_hour().hour() + gw_cloud_plan.total_hour().hour() + service_plan.total_hour().hour();
-  println!("プロジェクト間分割不可能時間 (適当な日に追加): {:.2} 時間", sum_hour - plan_sum_hour);
-
+  println!("一日の基本労働時間: {:.2} 時間", (sum_hour / work_days as f64).hour());
   println!("{}", service_plan);
   println!("{}", gw_cloud_plan);
   println!("{}", portal_plan);
+
+  println!();
+
+  let plan_work_days = portal_plan.work_days() + gw_cloud_plan.work_days() + service_plan.work_days();
+  println!("プロジェクト間分割不可能日数 (各プロジェクトの余り時間を入力): {:1.0} 日", work_days - plan_work_days);
+
+  let plan_sum_hour = portal_plan.total_hour().hour() + gw_cloud_plan.total_hour().hour() + service_plan.total_hour().hour();
+  println!("プロジェクト間分割不可能時間 (プロジェクト間分割不可能日に追加): {:.2} 時間", sum_hour - plan_sum_hour);
 }
