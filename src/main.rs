@@ -2,7 +2,7 @@ use std::env;
 
 use clap::App;
 use env_logger;
-use log::{error, Level};
+use log::{debug, error, Level};
 
 mod plan;
 mod work_hour;
@@ -28,6 +28,7 @@ fn main() {
   }
 
   let total_hour = WorkHour::new(total_hour.unwrap());
+  debug!("total_hour({}): {:?}", &total_hour, &total_hour);
   if 140. > total_hour.raw() {
     error!("一人月の労働時間は140時間以上にしてください。");
     return;
@@ -60,6 +61,8 @@ fn main() {
     work_days,
     "SBN_クラウドポータルv1.25開発"
   );
+  debug!("portal_plan: {:?}", &portal_plan);
+
 
   // SBN_クラウドGW
   let gw_cloud_plan = plan::Plan::new(
@@ -69,6 +72,7 @@ fn main() {
     work_days,
     "SBN_クラウドGW_v1.24開発"
   );
+  debug!("gw_cloud_plan: {:?}", &gw_cloud_plan);
 
 
   // SBNサービス運営
@@ -79,6 +83,7 @@ fn main() {
     work_days,
     "SBNサービス運営_2021年08月 / MC運用業務（業託）MC運用業務（業託） ※25日までに入力すること"
   );
+  debug!("service_plan: {:?}", &service_plan);
 
 
   let plan_sum = portal_plan.total_hour() + gw_cloud_plan.total_hour() + service_plan.total_hour();
