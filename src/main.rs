@@ -6,7 +6,7 @@ use crate::work_hour::WorkHour;
 
 
 fn main() {
-  println!("Enter man hour:");
+  println!("Enter total hour:");
   input! {
     sum_hour: f64,
   }
