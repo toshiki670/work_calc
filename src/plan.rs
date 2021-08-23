@@ -32,7 +32,7 @@ impl Plan {
 
 impl fmt::Display for Plan {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-    // 分割できなかった余り時間 (適当な日に追加すること)
+    // 分割できなかった余り時間
     let rem_hour = self.total_hour.hour() % self.work_hours_per_day;
 
     write!(f, "{num} ({per}%): 累計 {total:2.2} 時間, {day:2.0} 日間, 余り {rem_hour:2.2} 時間 : {remark}",
