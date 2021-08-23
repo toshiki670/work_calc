@@ -1,4 +1,3 @@
-use proconio::input;
 use clap::App;
 
 mod plan;
@@ -7,19 +6,17 @@ use crate::work_hour::WorkHour;
 
 
 fn main() {
-  println!("Enter total hour:");
-  input! {
-    total_hour: f64,
-  }
-  let total_hour = WorkHour::new(total_hour);
+  let cli = clap::load_yaml!("cli.yml");
+  let matches = App::from_yaml(cli).get_matches();
 
+  // Total hour
+  let total_hour = matches.value_of("total_hour").unwrap();
+  let total_hour = WorkHour::new(total_hour.parse().unwrap());
   assert!(140. <= total_hour.raw(), "一人月の労働時間は140時間以上にしてください。");
   assert!(0. >= total_hour.reminder(), "{:.2}時間余分です。労働時間は15分刻みで入力してください。", total_hour.reminder());
 
-  println!("Enter work days:");
-  input! {
-    work_days: u8,
-  }
+  // Work days
+  let work_days = matches.value_of("work_days").unwrap().parse().unwrap();
   assert!(work_days <= 31, "31日以上入力しないでください。");
 
 
