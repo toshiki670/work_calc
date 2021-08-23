@@ -28,12 +28,22 @@ impl Plan {
 
 impl fmt::Display for Plan {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-     write!(f, "{num} ({per}%): 累計 {total:2.2} 時間, {day:2.0} 日間と{hour:2.2} 時間 : {remark}",
+    // この plan の日数
+    let day = (self.total_hour.hour() / self.work_hours_per_day) as i32 as f64;
+
+    // 一日の労働時間
+    let hour = WorkHour::new(self.total_hour.hour() / day).hour();
+
+    // 分割できなかった余り時間 (適当な日に追加すること)
+    let rem_hour = self.total_hour.hour() - (day * hour);
+
+    write!(f, "{num} ({per}%): 累計 {total:2.2} 時間, 一日 {hour:2.2} 時間, {day:2.0} 日間, 余り {rem_hour:2.2} 時間 : {remark}",
      num = self.number,
      per = self.percent,
      total = self.total_hour,
-     day = (self.total_hour.hour() / self.work_hours_per_day) as i32,
-     hour = self.total_hour.hour() % self.work_hours_per_day,
+     hour = hour,
+     day = day,
+     rem_hour = rem_hour,
      remark = self.remark
    )
   }
