@@ -1,0 +1,23 @@
+name: work_calc
+version: 1.0.0
+author: Toshiki <toshiki.dev@protonmail.ch>
+about: Work calculater
+args:
+    - verbose:
+        short: v
+        long: verbose
+        help: explain what is being done
+    - total_hour:
+        short: h
+        long: hour
+        value_name: VALUE
+        help: Input the total hour
+        required: true
+        takes_value: true
+    - work_days:
+        short: d
+        long: days
+        value_name: VALUE
+        help: Input the work days
+        required: true
+        takes_value: true
