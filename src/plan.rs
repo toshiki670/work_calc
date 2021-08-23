@@ -11,12 +11,12 @@ pub struct Plan {
 }
 
 impl Plan {
-  pub fn new(number: &'static str, percent: f64, sum_hour: WorkHour, work_days: u8, remark: &'static str) -> Self {
+  pub fn new(number: &'static str, percent: f64, total_hour: WorkHour, work_days: u8, remark: &'static str) -> Self {
     Plan {
       number: number,
       percent: percent,
-      total_hour: sum_hour * percent,
-      work_hours_per_day: (sum_hour / work_days as f64).hour(),
+      total_hour: total_hour * percent,
+      work_hours_per_day: (total_hour / work_days as f64).hour(),
       remark: remark,
     }
   }
