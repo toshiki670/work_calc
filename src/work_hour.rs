@@ -145,9 +145,9 @@ mod tests {
     let test2 = super::WorkHour::new(145.25) * 2.50;
     assert_eq!(test2, 363.0);
     assert_eq!(test2.reminder(), 0.125);
-    let test3 = super::WorkHour::new(145.25) * 0.30;
-    assert_eq!(test3, 43.5);
-    assert_eq!(test3.reminder(), 0.07500076);
+    let test3 = super::WorkHour::new(145.25) * 0.50;
+    assert_eq!(test3, 72.5);
+    assert_eq!(test3.reminder(), 0.125);
   }
 
   #[test]
@@ -163,12 +163,12 @@ mod tests {
   #[test]
   fn be_valid_rem() {
     let test1 = super::WorkHour::new(145.25) % super::WorkHour::new(1.25);
-    assert_eq!(test1, 116.0);
+    assert_eq!(test1, 0.25);
     let test2 = super::WorkHour::new(145.25) % 2.50;
-    assert_eq!(test2, 58.0);
+    assert_eq!(test2, 0.25);
     let test3 = super::WorkHour::new(145.25) % 0.30;
-    assert_eq!(test3, 484.0);
+    assert_eq!(test3, 0.0);
     let test4 = super::WorkHour::new(145.25) % 150.0;
-    assert_eq!(test4, 484.0);
+    assert_eq!(test4, 145.25);
   }
 }
