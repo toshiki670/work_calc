@@ -1,4 +1,8 @@
+use std::env;
+
 use clap::App;
+use env_logger;
+use log::Level;
 
 mod plan;
 mod work_hour;
@@ -8,6 +12,11 @@ use crate::work_hour::WorkHour;
 fn main() {
   let cli = clap::load_yaml!("cli.yml");
   let matches = App::from_yaml(cli).get_matches();
+
+  if matches.is_present("verbose") {
+    env::set_var("RUST_LOG", Level::Trace.to_string());
+  }
+  env_logger::init();
 
   // Total hour
   let total_hour = matches.value_of("total_hour").unwrap();
