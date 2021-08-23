@@ -1,5 +1,5 @@
 [package]
-name = "man_hour"
+name = "work_calc"
 version = "0.5.1"
 authors = ["Toshiki.Kawazoe <toshiki.kawazoe@sony.com>"]
 edition = "2018"
