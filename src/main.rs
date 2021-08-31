@@ -4,6 +4,7 @@ use clap::App;
 use env_logger;
 use log::{debug, error, Level};
 
+mod input;
 mod plan;
 mod setting;
 mod work_hour;
