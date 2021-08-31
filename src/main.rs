@@ -5,10 +5,11 @@ use env_logger;
 use log::{debug, error, Level};
 
 mod plan;
+mod setting;
 mod work_hour;
 use crate::work_hour::WorkHour;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = clap::load_yaml!("cli.yml");
     let matches = App::from_yaml(cli).get_matches();
 
@@ -16,6 +17,9 @@ fn main() {
         env::set_var("RUST_LOG", Level::Trace.to_string());
     }
     env_logger::init();
+
+    let setting_path = matches.value_of("setting").unwrap_or(setting::DEFAULT_PATH);
+    let setting = setting::Setting::read(setting_path)?;
 
     // Total hour
     let raw_total_hour = matches.value_of("total_hour").unwrap();
@@ -30,13 +34,13 @@ fn main() {
     debug!("total_hour({}): {:?}", &total_hour, &total_hour);
     if 140. > total_hour.raw() {
         error!("一人月の労働時間は140時間以上にしてください。");
-        return;
+        panic!("Over 140 hour.");
     } else if 0. < total_hour.reminder() {
         error!(
             "{:.2}時間余分です。労働時間は15分刻みで入力してください。",
             total_hour.reminder()
         );
-        return;
+        panic!("Error {}.", total_hour.reminder());
     }
 
     // Work days
@@ -54,38 +58,16 @@ fn main() {
         panic!("work_days({}) exceeded 31.", work_days);
     }
 
-    // SBN_クラウドポータルv1.25開発
-    let portal_plan = plan::Plan::new(
-        "210915-01",
-        0.5,
-        total_hour,
-        work_days,
-        "SBN_クラウドポータルv1.25開発",
-    );
-    debug!("portal_plan: {:?}", &portal_plan);
+    let mut plans: Vec<plan::Plan> = Vec::new();
+    for p in setting.plans {
+        plans.push(plan::Plan::new(
+            p.number, p.percent, total_hour, work_days, p.remark,
+        ));
+    }
 
-    // SBN_クラウドGW
-    let gw_cloud_plan = plan::Plan::new(
-        "206175-01",
-        0.2,
-        total_hour,
-        work_days,
-        "SBN_クラウドGW_v1.24開発",
-    );
-    debug!("gw_cloud_plan: {:?}", &gw_cloud_plan);
-
-    // SBNサービス運営
-    let service_plan = plan::Plan::new(
-        "191852-27",
-        0.3,
-        total_hour,
-        work_days,
-        "SBNサービス運営_2021年08月 / MC運用業務（業託）MC運用業務（業託） ※25日までに入力すること",
-    );
-    debug!("service_plan: {:?}", &service_plan);
-
-    let plan_sum =
-        portal_plan.total_hour() + gw_cloud_plan.total_hour() + service_plan.total_hour();
+    let plan_sum = plans
+        .iter()
+        .fold(WorkHour::new(0.0), |sum, p| sum + p.total_hour());
     if total_hour != plan_sum {
         error!("計算結果と合計時間が異なる。");
         panic!(
@@ -98,24 +80,23 @@ fn main() {
         "一日の基本労働時間: {:.2} 時間",
         (total_hour / work_days as f64).hour()
     );
-    println!("{}", service_plan);
-    println!("{}", gw_cloud_plan);
-    println!("{}", portal_plan);
 
+    for plan in plans.iter() {
+        println!("{}", plan);
+    }
     println!();
 
-    let plan_work_days =
-        portal_plan.work_days() + gw_cloud_plan.work_days() + service_plan.work_days();
+    let plan_work_days = plans.iter().fold(0, |sum, p| sum + p.work_days());
     println!(
         "プロジェクト間分割不可能日数 (各プロジェクトの余り時間を入力): {:1.0} 日",
         work_days - plan_work_days
     );
 
-    let plan_total_hour = portal_plan.total_hour().hour()
-        + gw_cloud_plan.total_hour().hour()
-        + service_plan.total_hour().hour();
+    let plan_total_hour = plans.iter().fold(0.0, |sum, p| sum + p.total_hour().hour());
     println!(
         "プロジェクト間分割不可能時間 (プロジェクト間分割不可能日に追加): {:.2} 時間",
         total_hour - plan_total_hour
     );
+
+    Ok(())
 }
