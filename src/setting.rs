@@ -14,10 +14,12 @@ pub struct Setting {
     pub plans: Vec<Plans>,
 }
 
-pub const DEFAULT_PATH: &str = "./setting.toml";
+const DEFAULT_PATH: &str = "./setting.toml";
 
 impl Setting {
-    pub fn read(setting_path: &str) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn read(setting_path: Option<&str>) -> Result<Self, Box<dyn std::error::Error>> {
+        let setting_path = setting_path.unwrap_or(DEFAULT_PATH);
+
         match fs::read_to_string(setting_path) {
             Ok(setting_raw) => {
                 debug!("setting_raw: {:?}", &setting_raw);

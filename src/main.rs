@@ -18,8 +18,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     env_logger::init();
 
-    let setting_path = matches.value_of("setting").unwrap_or(setting::DEFAULT_PATH);
-    let setting = setting::Setting::read(setting_path)?;
+    let setting = setting::Setting::read(matches.value_of("setting"))?;
 
     // Total hour
     let raw_total_hour = matches.value_of("total_hour").unwrap();
