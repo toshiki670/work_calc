@@ -21,3 +21,9 @@ args:
         help: Input the work days
         required: true
         takes_value: true
+    - setting:
+        short: s
+        long: setting
+        value_name: PATH
+        help: Specify your setting file
+        takes_value: true
