@@ -8,7 +8,7 @@ mod plan;
 mod work_hour;
 use crate::work_hour::WorkHour;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = clap::load_yaml!("cli.yml");
     let matches = App::from_yaml(cli).get_matches();
 
@@ -30,13 +30,13 @@ fn main() {
     debug!("total_hour({}): {:?}", &total_hour, &total_hour);
     if 140. > total_hour.raw() {
         error!("一人月の労働時間は140時間以上にしてください。");
-        return;
+        panic!("Over 140 hour.");
     } else if 0. < total_hour.reminder() {
         error!(
             "{:.2}時間余分です。労働時間は15分刻みで入力してください。",
             total_hour.reminder()
         );
-        return;
+        panic!("Error {}.", total_hour.reminder());
     }
 
     // Work days
@@ -118,4 +118,6 @@ fn main() {
         "プロジェクト間分割不可能時間 (プロジェクト間分割不可能日に追加): {:.2} 時間",
         total_hour - plan_total_hour
     );
+
+    Ok(())
 }
