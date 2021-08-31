@@ -2,6 +2,13 @@ use log::{debug, error};
 use serde::Deserialize;
 use std::fs;
 
+
+#[derive(Debug, Deserialize)]
+pub struct General {
+    pub total_hour: Option<String>,
+    pub work_days: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Plans {
     pub number: String,
@@ -11,6 +18,7 @@ pub struct Plans {
 
 #[derive(Debug, Deserialize)]
 pub struct Setting {
+    pub general: General,
     pub plans: Vec<Plans>,
 }
 
