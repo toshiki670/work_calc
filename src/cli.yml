@@ -12,14 +12,12 @@ args:
         long: hour
         value_name: VALUE
         help: Input the total hour
-        required: true
         takes_value: true
     - work_days:
         short: d
         long: days
         value_name: VALUE
         help: Input the work days
-        required: true
         takes_value: true
     - setting:
         short: s

@@ -2,8 +2,9 @@ use std::env;
 
 use clap::App;
 use env_logger;
-use log::{debug, error, Level};
+use log::{error, Level};
 
+mod input;
 mod plan;
 mod setting;
 mod work_hour;
@@ -18,45 +19,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     env_logger::init();
 
-    let setting_path = matches.value_of("setting").unwrap_or(setting::DEFAULT_PATH);
-    let setting = setting::Setting::read(setting_path)?;
+    let setting = setting::Setting::read(matches.value_of("setting"))?;
 
     // Total hour
-    let raw_total_hour = matches.value_of("total_hour").unwrap();
-    let total_hour = raw_total_hour.parse();
-    if let Err(e) = total_hour {
-        error!("合計時間が誤っています。");
-        error!("数字であることを確認してください: {}.", &raw_total_hour);
-        panic!("ParseError: {}.", e);
-    }
-
-    let total_hour = WorkHour::new(total_hour.unwrap());
-    debug!("total_hour({}): {:?}", &total_hour, &total_hour);
-    if 140. > total_hour.raw() {
-        error!("一人月の労働時間は140時間以上にしてください。");
-        panic!("Over 140 hour.");
-    } else if 0. < total_hour.reminder() {
-        error!(
-            "{:.2}時間余分です。労働時間は15分刻みで入力してください。",
-            total_hour.reminder()
-        );
-        panic!("Error {}.", total_hour.reminder());
-    }
+    let total_hour =
+        input::get_total_hour(matches.value_of("total_hour"), &setting.general.total_hour)?;
 
     // Work days
-    let raw_work_days = matches.value_of("work_days").unwrap();
-    let work_days = raw_work_days.parse();
-    if let Err(e) = work_days {
-        error!("労働日数が誤っています。");
-        error!("数字であることを確認してください: {}.", &raw_work_days);
-        panic!("ParseError: {}.", e);
-    }
-    let work_days = work_days.unwrap();
-
-    if work_days > 31 {
-        error!("31日以上入力しないでください。");
-        panic!("work_days({}) exceeded 31.", work_days);
-    }
+    let work_days =
+        input::get_work_days(matches.value_of("work_days"), &setting.general.work_days)?;
 
     let mut plans: Vec<plan::Plan> = Vec::new();
     for p in setting.plans {
