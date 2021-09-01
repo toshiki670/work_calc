@@ -1,6 +1,6 @@
 use log::{debug, error};
 use std::error::Error;
-use std::fmt;
+use std::{fmt, io};
 
 use crate::work_hour::WorkHour;
 
@@ -30,13 +30,18 @@ pub fn get_total_hour(
     matches: Option<&str>,
     setting: &Option<String>,
 ) -> Result<WorkHour, Box<dyn Error>> {
+    let mut stdin_line = String::new();
+
     // Total hour
     let raw_total_hour = match matches {
         Some(hour) => hour,
         None => {
             match setting {
                 Some(hour) => hour,
-                None => "140.0", // WIP: 標準入力
+                None => {
+                    read_stdin_line("合計時間", &mut stdin_line)?;
+                    stdin_line.trim()
+                },
             }
         }
     };
@@ -72,13 +77,18 @@ pub fn get_work_days(
     matches: Option<&str>,
     setting: &Option<String>,
 ) -> Result<u8, Box<dyn Error>> {
+    let mut stdin_line = String::new();
+
     // Work days
     let raw_work_days = match matches {
         Some(hour) => hour,
         None => {
             match setting {
                 Some(hour) => hour,
-                None => "18", // WIP: 標準入力
+                None => {
+                    read_stdin_line("労働日数", &mut stdin_line)?;
+                    stdin_line.trim()
+                },
             }
         }
     };
@@ -98,4 +108,14 @@ pub fn get_work_days(
     }
 
     Ok(work_days)
+}
+
+fn read_stdin_line(title: &str, stdin_line: &mut String) -> Result<(), std::io::Error> {
+    println!("{} を入力してください：", title);
+
+    if let Err(e) = io::stdin().read_line(stdin_line) {
+        error!("標準入力に失敗しました。");
+        return Err(e);
+    }
+    Ok(())
 }
