@@ -35,15 +35,13 @@ pub fn get_total_hour(
     // Total hour
     let raw_total_hour = match matches {
         Some(hour) => hour,
-        None => {
-            match setting {
-                Some(hour) => hour,
-                None => {
-                    read_stdin_line("合計時間", &mut stdin_line)?;
-                    stdin_line.trim()
-                },
+        None => match setting {
+            Some(hour) => hour,
+            None => {
+                read_stdin_line("合計時間", &mut stdin_line)?;
+                stdin_line.trim()
             }
-        }
+        },
     };
 
     let total_hour = match raw_total_hour.parse() {
@@ -82,15 +80,13 @@ pub fn get_work_days(
     // Work days
     let raw_work_days = match matches {
         Some(hour) => hour,
-        None => {
-            match setting {
-                Some(hour) => hour,
-                None => {
-                    read_stdin_line("労働日数", &mut stdin_line)?;
-                    stdin_line.trim()
-                },
+        None => match setting {
+            Some(hour) => hour,
+            None => {
+                read_stdin_line("労働日数", &mut stdin_line)?;
+                stdin_line.trim()
             }
-        }
+        },
     };
 
     let work_days = match raw_work_days.parse() {

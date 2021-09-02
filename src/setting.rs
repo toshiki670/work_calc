@@ -2,7 +2,6 @@ use log::{debug, error};
 use serde::Deserialize;
 use std::fs;
 
-
 #[derive(Debug, Deserialize)]
 pub struct General {
     pub total_hour: Option<String>,

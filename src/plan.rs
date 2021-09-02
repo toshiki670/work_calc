@@ -37,6 +37,10 @@ impl Plan {
     pub fn work_days(&self) -> u8 {
         (self.total_hour.hour() / self.work_hours_per_day) as u8
     }
+
+    pub fn percent(&self) -> f64 {
+        self.percent
+    }
 }
 
 impl fmt::Display for Plan {
