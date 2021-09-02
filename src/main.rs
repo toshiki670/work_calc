@@ -2,13 +2,15 @@ use std::env;
 
 use clap::App;
 use env_logger;
-use log::{debug, error, Level};
+use log::Level;
 
-mod plan;
+mod case;
+mod input;
+mod setting;
+mod validation;
 mod work_hour;
-use crate::work_hour::WorkHour;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = clap::load_yaml!("cli.yml");
     let matches = App::from_yaml(cli).get_matches();
 
@@ -17,105 +19,49 @@ fn main() {
     }
     env_logger::init();
 
-    // Total hour
-    let raw_total_hour = matches.value_of("total_hour").unwrap();
-    let total_hour = raw_total_hour.parse();
-    if let Err(e) = total_hour {
-        error!("合計時間が誤っています。");
-        error!("数字であることを確認してください: {}.", &raw_total_hour);
-        panic!("ParseError: {}.", e);
-    }
+    let setting = setting::Setting::read(matches.value_of("setting"))?;
 
-    let total_hour = WorkHour::new(total_hour.unwrap());
-    debug!("total_hour({}): {:?}", &total_hour, &total_hour);
-    if 140. > total_hour.raw() {
-        error!("一人月の労働時間は140時間以上にしてください。");
-        return;
-    } else if 0. < total_hour.reminder() {
-        error!(
-            "{:.2}時間余分です。労働時間は15分刻みで入力してください。",
-            total_hour.reminder()
-        );
-        return;
-    }
+    // Total hour
+    let total_hour =
+        input::get_total_hour(matches.value_of("total_hour"), &setting.general.total_hour)?;
 
     // Work days
-    let raw_work_days = matches.value_of("work_days").unwrap();
-    let work_days = raw_work_days.parse();
-    if let Err(e) = work_days {
-        error!("労働日数が誤っています。");
-        error!("数字であることを確認してください: {}.", &raw_work_days);
-        panic!("ParseError: {}.", e);
-    }
-    let work_days = work_days.unwrap();
+    let work_days =
+        input::get_work_days(matches.value_of("work_days"), &setting.general.work_days)?;
 
-    if work_days > 31 {
-        error!("31日以上入力しないでください。");
-        panic!("work_days({}) exceeded 31.", work_days);
+    // Instantiate cases
+    let mut cases: Vec<case::Case> = Vec::new();
+    for p in setting.cases {
+        cases.push(case::Case::new(
+            p.number, p.percent, total_hour, work_days, p.remark,
+        ));
     }
 
-    // SBN_クラウドポータルv1.25開発
-    let portal_plan = plan::Plan::new(
-        "210915-01",
-        0.5,
-        total_hour,
-        work_days,
-        "SBN_クラウドポータルv1.25開発",
-    );
-    debug!("portal_plan: {:?}", &portal_plan);
-
-    // SBN_クラウドGW
-    let gw_cloud_plan = plan::Plan::new(
-        "206175-01",
-        0.2,
-        total_hour,
-        work_days,
-        "SBN_クラウドGW_v1.24開発",
-    );
-    debug!("gw_cloud_plan: {:?}", &gw_cloud_plan);
-
-    // SBNサービス運営
-    let service_plan = plan::Plan::new(
-        "191852-27",
-        0.3,
-        total_hour,
-        work_days,
-        "SBNサービス運営_2021年08月 / MC運用業務（業託）MC運用業務（業託） ※25日までに入力すること",
-    );
-    debug!("service_plan: {:?}", &service_plan);
-
-    let plan_sum =
-        portal_plan.total_hour() + gw_cloud_plan.total_hour() + service_plan.total_hour();
-    if total_hour != plan_sum {
-        error!("計算結果と合計時間が異なる。");
-        panic!(
-            "total_hour({}) and plan_sum({}) are different",
-            total_hour, plan_sum
-        );
-    }
+    // Validations
+    validation::valid_total_percent(&cases)?;
+    validation::valid_equals_total_hour_and_cases_total_hour(&total_hour, &cases)?;
 
     println!(
         "一日の基本労働時間: {:.2} 時間",
         (total_hour / work_days as f64).hour()
     );
-    println!("{}", service_plan);
-    println!("{}", gw_cloud_plan);
-    println!("{}", portal_plan);
 
+    for case in cases.iter() {
+        println!("{}", case);
+    }
     println!();
 
-    let plan_work_days =
-        portal_plan.work_days() + gw_cloud_plan.work_days() + service_plan.work_days();
+    let case_work_days = cases.iter().fold(0, |sum, p| sum + p.work_days());
     println!(
-        "プロジェクト間分割不可能日数 (各プロジェクトの余り時間を入力): {:1.0} 日",
-        work_days - plan_work_days
+        "各案件で分割不可能な日数 (各案件の余り時間を入力): {:1.0} 日",
+        work_days - case_work_days
     );
 
-    let plan_total_hour = portal_plan.total_hour().hour()
-        + gw_cloud_plan.total_hour().hour()
-        + service_plan.total_hour().hour();
+    let case_total_hour = cases.iter().fold(0.0, |sum, p| sum + p.total_hour().hour());
     println!(
-        "プロジェクト間分割不可能時間 (プロジェクト間分割不可能日に追加): {:.2} 時間",
-        total_hour - plan_total_hour
+        "各案件で分割不可能な時間 (各案件で分割不可能な日数に追加): {:.2} 時間",
+        total_hour - case_total_hour
     );
+
+    Ok(())
 }
