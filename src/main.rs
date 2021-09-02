@@ -2,13 +2,13 @@ use std::env;
 
 use clap::App;
 use env_logger;
-use log::{error, Level};
+use log::Level;
 
 mod input;
 mod plan;
 mod setting;
+mod validation;
 mod work_hour;
-use crate::work_hour::WorkHour;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = clap::load_yaml!("cli.yml");
@@ -29,6 +29,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let work_days =
         input::get_work_days(matches.value_of("work_days"), &setting.general.work_days)?;
 
+    // Instantiate the plan
     let mut plans: Vec<plan::Plan> = Vec::new();
     for p in setting.plans {
         plans.push(plan::Plan::new(
@@ -36,16 +37,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         ));
     }
 
-    let plan_sum = plans
-        .iter()
-        .fold(WorkHour::new(0.0), |sum, p| sum + p.total_hour());
-    if total_hour != plan_sum {
-        error!("計算結果と合計時間が異なる。");
-        panic!(
-            "total_hour({}) and plan_sum({}) are different",
-            total_hour, plan_sum
-        );
-    }
+    // Validations
+    validation::valid_equals_total_hour_and_plans_total_hour(&total_hour, &plans)?;
 
     println!(
         "一日の基本労働時間: {:.2} 時間",
