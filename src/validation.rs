@@ -9,6 +9,7 @@ use crate::work_hour::WorkHour;
 #[derive(Debug)]
 pub enum ValidError {
     NotEqualsTotalHourAndPlansTotalHourError,
+    TotalPercentIsntOneError,
 }
 impl Error for ValidError {}
 
@@ -18,7 +19,21 @@ impl fmt::Display for ValidError {
             ValidError::NotEqualsTotalHourAndPlansTotalHourError => {
                 write!(f, "NotEqualsTotalHourAndPlansTotalHourError")
             }
+            ValidError::TotalPercentIsntOneError => {
+                write!(f, "TotalPercentIsntOneError")
+            }
         }
+    }
+}
+
+pub fn valid_total_percent(plans: &Vec<plan::Plan>) -> Result<(), Box<dyn Error>> {
+    let total_percent = plans.iter().fold(0.0, |sum, p| sum + p.percent());
+
+    if 0.9999 <= total_percent && total_percent <= 1.0001 {
+        Ok(())
+    } else {
+        error!("各案件のパーセントの合計が1ではない: {}", total_percent);
+        Err(Box::new(ValidError::TotalPercentIsntOneError))
     }
 }
 

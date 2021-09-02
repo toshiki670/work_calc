@@ -38,6 +38,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // Validations
+    validation::valid_total_percent(&plans)?;
     validation::valid_equals_total_hour_and_plans_total_hour(&total_hour, &plans)?;
 
     println!(
