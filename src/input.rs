@@ -117,5 +117,7 @@ fn read_stdin_line(title: &str, stdin_line: &mut String) -> Result<(), std::io::
         error!("標準入力に失敗しました。");
         return Err(e);
     }
+    println!();
+
     Ok(())
 }
