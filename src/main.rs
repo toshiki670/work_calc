@@ -4,8 +4,8 @@ use clap::App;
 use env_logger;
 use log::Level;
 
-mod input;
 mod case;
+mod input;
 mod setting;
 mod validation;
 mod work_hour;
