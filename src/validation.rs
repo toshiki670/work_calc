@@ -32,7 +32,10 @@ pub fn valid_equals_total_hour_and_plans_total_hour(
     if *total_hour == plan_total_hour {
         Ok(())
     } else {
-        error!("計算結果と合計時間が不一致: {} != {}", total_hour, plan_total_hour);
+        error!(
+            "計算結果と合計時間が不一致: {} != {}",
+            total_hour, plan_total_hour
+        );
         Err(Box::new(
             ValidError::NotEqualsTotalHourAndPlansTotalHourError,
         ))
