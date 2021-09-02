@@ -5,7 +5,7 @@ use env_logger;
 use log::Level;
 
 mod input;
-mod plan;
+mod case;
 mod setting;
 mod validation;
 mod work_hour;
@@ -30,9 +30,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         input::get_work_days(matches.value_of("work_days"), &setting.general.work_days)?;
 
     // Instantiate the plan
-    let mut plans: Vec<plan::Plan> = Vec::new();
+    let mut plans: Vec<case::Plan> = Vec::new();
     for p in setting.plans {
-        plans.push(plan::Plan::new(
+        plans.push(case::Plan::new(
             p.number, p.percent, total_hour, work_days, p.remark,
         ));
     }

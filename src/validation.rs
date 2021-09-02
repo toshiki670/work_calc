@@ -2,7 +2,7 @@ use log::error;
 use std::error::Error;
 use std::fmt;
 
-use crate::plan;
+use crate::case;
 
 use crate::work_hour::WorkHour;
 
@@ -26,7 +26,7 @@ impl fmt::Display for ValidError {
     }
 }
 
-pub fn valid_total_percent(plans: &Vec<plan::Plan>) -> Result<(), Box<dyn Error>> {
+pub fn valid_total_percent(plans: &Vec<case::Plan>) -> Result<(), Box<dyn Error>> {
     let total_percent = plans.iter().fold(0.0, |sum, p| sum + p.percent());
 
     if 0.9999 <= total_percent && total_percent <= 1.0001 {
@@ -39,7 +39,7 @@ pub fn valid_total_percent(plans: &Vec<plan::Plan>) -> Result<(), Box<dyn Error>
 
 pub fn valid_equals_total_hour_and_plans_total_hour(
     total_hour: &WorkHour,
-    plans: &Vec<plan::Plan>,
+    plans: &Vec<case::Plan>,
 ) -> Result<(), Box<dyn Error>> {
     let plan_total_hour = plans
         .iter()
