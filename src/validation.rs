@@ -1,4 +1,4 @@
-use log::error;
+use log::{debug, error};
 use std::error::Error;
 use std::fmt;
 
@@ -30,6 +30,7 @@ pub fn valid_total_percent(cases: &Vec<case::Case>) -> Result<(), Box<dyn Error>
     let total_percent = cases.iter().fold(0.0, |sum, p| sum + p.percent());
 
     if 0.9999 <= total_percent && total_percent <= 1.0001 {
+        debug!("validation.valid_total_percent() -> Ok; total_percent: {:?}", &total_percent);
         Ok(())
     } else {
         error!("各案件のパーセントの合計が1ではない: {}", total_percent);
@@ -45,6 +46,9 @@ pub fn valid_equals_total_hour_and_cases_total_hour(
         .iter()
         .fold(WorkHour::new(0.0), |sum, p| sum + p.total_hour());
     if *total_hour == case_total_hour {
+        debug!("validation.valid_equals_total_hour_and_cases_total_hour() -> Ok");
+        debug!("  total_hour: {:?}", &total_hour);
+        debug!("  case_total_hour: {:?}", &case_total_hour);
         Ok(())
     } else {
         error!(
