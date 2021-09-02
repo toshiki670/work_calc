@@ -9,7 +9,7 @@ pub struct General {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct Plans {
+pub struct Cases {
     pub number: String,
     pub percent: f64,
     pub remark: String,
@@ -18,7 +18,7 @@ pub struct Plans {
 #[derive(Debug, Deserialize)]
 pub struct Setting {
     pub general: General,
-    pub plans: Vec<Plans>,
+    pub cases: Vec<Cases>,
 }
 
 const DEFAULT_PATH: &str = "./setting.toml";

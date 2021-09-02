@@ -2,13 +2,13 @@ use log::error;
 use std::error::Error;
 use std::fmt;
 
-use crate::plan;
+use crate::case;
 
 use crate::work_hour::WorkHour;
 
 #[derive(Debug)]
 pub enum ValidError {
-    NotEqualsTotalHourAndPlansTotalHourError,
+    NotEqualsTotalHourAndCasesTotalHourError,
     TotalPercentIsntOneError,
 }
 impl Error for ValidError {}
@@ -16,8 +16,8 @@ impl Error for ValidError {}
 impl fmt::Display for ValidError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            ValidError::NotEqualsTotalHourAndPlansTotalHourError => {
-                write!(f, "NotEqualsTotalHourAndPlansTotalHourError")
+            ValidError::NotEqualsTotalHourAndCasesTotalHourError => {
+                write!(f, "NotEqualsTotalHourAndCasesTotalHourError")
             }
             ValidError::TotalPercentIsntOneError => {
                 write!(f, "TotalPercentIsntOneError")
@@ -26,8 +26,8 @@ impl fmt::Display for ValidError {
     }
 }
 
-pub fn valid_total_percent(plans: &Vec<plan::Plan>) -> Result<(), Box<dyn Error>> {
-    let total_percent = plans.iter().fold(0.0, |sum, p| sum + p.percent());
+pub fn valid_total_percent(cases: &Vec<case::Case>) -> Result<(), Box<dyn Error>> {
+    let total_percent = cases.iter().fold(0.0, |sum, p| sum + p.percent());
 
     if 0.9999 <= total_percent && total_percent <= 1.0001 {
         Ok(())
@@ -37,22 +37,22 @@ pub fn valid_total_percent(plans: &Vec<plan::Plan>) -> Result<(), Box<dyn Error>
     }
 }
 
-pub fn valid_equals_total_hour_and_plans_total_hour(
+pub fn valid_equals_total_hour_and_cases_total_hour(
     total_hour: &WorkHour,
-    plans: &Vec<plan::Plan>,
+    cases: &Vec<case::Case>,
 ) -> Result<(), Box<dyn Error>> {
-    let plan_total_hour = plans
+    let case_total_hour = cases
         .iter()
         .fold(WorkHour::new(0.0), |sum, p| sum + p.total_hour());
-    if *total_hour == plan_total_hour {
+    if *total_hour == case_total_hour {
         Ok(())
     } else {
         error!(
             "計算結果と合計時間が不一致: {} != {}",
-            total_hour, plan_total_hour
+            total_hour, case_total_hour
         );
         Err(Box::new(
-            ValidError::NotEqualsTotalHourAndPlansTotalHourError,
+            ValidError::NotEqualsTotalHourAndCasesTotalHourError,
         ))
     }
 }
