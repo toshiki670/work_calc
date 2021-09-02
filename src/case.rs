@@ -3,7 +3,7 @@ use std::fmt;
 use crate::work_hour::WorkHour;
 
 #[derive(Debug)]
-pub struct Plan {
+pub struct Case {
     number: String,
     percent: f64,
     total_hour: WorkHour,
@@ -11,7 +11,7 @@ pub struct Plan {
     remark: String,
 }
 
-impl Plan {
+impl Case {
     pub fn new(
         number: String,
         percent: f64,
@@ -21,7 +21,7 @@ impl Plan {
     ) -> Self {
         let work_hours_per_day = (total_hour / work_days as f64).hour();
 
-        Plan {
+        Case {
             number: number,
             percent: percent,
             total_hour: total_hour * percent,
@@ -43,7 +43,7 @@ impl Plan {
     }
 }
 
-impl fmt::Display for Plan {
+impl fmt::Display for Case {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         // 分割できなかった余り時間
         let rem_hour = self.total_hour.hour() % self.work_hours_per_day;
