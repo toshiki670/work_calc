@@ -1,8 +1,8 @@
 [package]
 authors = ["Toshiki.Kawazoe <toshiki.kawazoe@sony.com>"]
-edition = "2021"
+edition = "2018"
 name = "work_calc"
-rust-version = "1.56"
+rust-version = "1.54"
 version = "1.1.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
