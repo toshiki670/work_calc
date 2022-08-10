@@ -52,9 +52,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!();
 
     let case_work_days = cases.iter().fold(0, |sum, p| sum + p.work_days());
+    let non_divisible_days = work_days - case_work_days;
     println!(
         "各案件で分割不可能な日数 (各案件の余り時間を入力): {:1.0} 日",
-        work_days - case_work_days
+        non_divisible_days
     );
 
     let case_total_hour = cases.iter().fold(0.0, |sum, p| sum + p.total_hour().hour());
