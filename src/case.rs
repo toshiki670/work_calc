@@ -41,6 +41,11 @@ impl Case {
     pub fn percent(&self) -> f64 {
         self.percent
     }
+
+    // 分割できなかった余り時間
+    pub fn rem_hour(&self) -> WorkHour {
+        self.total_hour % self.work_hours_per_day
+    }
 }
 
 impl fmt::Display for Case {
@@ -53,7 +58,7 @@ impl fmt::Display for Case {
             per = self.percent,
             total = self.total_hour,
             day = self.work_days(),
-            rem_hour = rem_hour,
+            rem_hour = self.rem_hour(),
             remark = self.remark
         )
     }
