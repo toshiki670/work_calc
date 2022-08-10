@@ -3,7 +3,7 @@ authors = ["Toshiki.Kawazoe <toshiki.kawazoe@sony.com>"]
 edition = "2021"
 name = "work_calc"
 rust-version = "1.62.1"
-version = "1.2.1"
+version = "1.2.2"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
