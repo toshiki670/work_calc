@@ -1,6 +1,6 @@
 name: work_calc
 version: 1.2.1
-author: Toshiki <toshiki.dev@protonmail.ch>
+author: Toshiki <toshiki.kawazoe@sony.com>
 about: Work calculater
 args:
     - verbose:
