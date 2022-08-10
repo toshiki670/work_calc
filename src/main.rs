@@ -58,6 +58,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         non_divisible_days
     );
 
+    let sum_rem_hour = cases.iter().fold(WorkHour::new(0.0), |sum, case| sum + case.rem_hour());
+    println!(
+        "各案件で分割不可能な日の平均労働時間 (各案件の余り時間を入力): {:.2} 時間、余り {:.2} 時間",
+        sum_rem_hour / non_divisible_days as f64,
+        sum_rem_hour.rem_as_value(non_divisible_days as f64)
+    );
+
     let case_total_hour = cases.iter().fold(0.0, |sum, p| sum + p.total_hour().hour());
     println!(
         "各案件で分割不可能な時間 (各案件で分割不可能な日数に追加): {:.2} 時間",
