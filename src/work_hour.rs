@@ -28,6 +28,10 @@ impl WorkHour {
     pub fn reminder(&self) -> f64 {
         self.reminder
     }
+
+    pub fn rem_as_value(&self, other: f64) -> f64 {
+        self.value as f64 % other * WorkHour::QUARTER
+    }
 }
 
 impl fmt::Display for WorkHour {
