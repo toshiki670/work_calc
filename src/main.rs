@@ -3,6 +3,7 @@ use std::env;
 use clap::App;
 use env_logger;
 use log::Level;
+use crate::work_hour::WorkHour;
 
 mod case;
 mod input;
