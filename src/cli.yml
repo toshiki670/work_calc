@@ -8,8 +8,8 @@ args:
         long: verbose
         help: explain what is being done
     - total_hour:
-        short: h
-        long: hour
+        short: t
+        long: total
         value_name: VALUE
         help: Input the total hour
         takes_value: true
