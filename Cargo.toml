@@ -8,7 +8,7 @@ version = "1.2.3"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-clap = {version = "3.2.16", features = ["yaml"]}
+clap = {version = "3.2.23", features = ["yaml"]}
 env_logger = "0.10.0"
 log = "0.4.17"
 serde = {version = "1.0.152", features = ["derive"]}
