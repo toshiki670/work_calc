@@ -1,34 +1,34 @@
 use std::env;
 
-use clap::Parser;
+use clap::App;
 use env_logger;
 use log::Level;
 use crate::work_hour::WorkHour;
 
 mod case;
-mod cli;
 mod input;
 mod setting;
 mod validation;
 mod work_hour;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let cli = cli::Cli::parse();
+    let cli = clap::load_yaml!("cli.yml");
+    let matches = App::from_yaml(cli).get_matches();
 
-    if cli.verbose {
+    if matches.is_present("verbose") {
         env::set_var("RUST_LOG", Level::Trace.to_string());
     }
     env_logger::init();
 
-    let setting = setting::Setting::read(cli.setting)?;
+    let setting = setting::Setting::read(matches.value_of("setting"))?;
 
     // Total hour
     let total_hour =
-        input::get_total_hour(&cli.total_hour, &setting.general.total_hour)?;
+        input::get_total_hour(matches.value_of("total_hour"), &setting.general.total_hour)?;
 
     // Work days
     let work_days =
-        input::get_work_days(&cli.work_days, &setting.general.work_days)?;
+        input::get_work_days(matches.value_of("work_days"), &setting.general.work_days)?;
 
     // Instantiate cases
     let mut cases: Vec<case::Case> = Vec::new();
