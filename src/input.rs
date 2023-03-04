@@ -27,13 +27,13 @@ impl fmt::Display for InputError {
 }
 
 pub fn get_total_hour(
-    matches: Option<&str>,
+    cli_total_hour: &Option<String>,
     setting: &Option<String>,
 ) -> Result<WorkHour, Box<dyn Error>> {
     let mut stdin_line = String::new();
 
     // Total hour
-    let raw_total_hour = match matches {
+    let raw_total_hour = match cli_total_hour {
         Some(hour) => hour,
         None => match setting {
             Some(hour) => hour,
@@ -72,13 +72,13 @@ pub fn get_total_hour(
 }
 
 pub fn get_work_days(
-    matches: Option<&str>,
+    cli_work_days: &Option<String>,
     setting: &Option<String>,
 ) -> Result<u8, Box<dyn Error>> {
     let mut stdin_line = String::new();
 
     // Work days
-    let raw_work_days = match matches {
+    let raw_work_days = match cli_work_days {
         Some(hour) => hour,
         None => match setting {
             Some(hour) => hour,
