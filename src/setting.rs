@@ -1,6 +1,7 @@
 use log::{debug, error};
 use serde::Deserialize;
 use std::fs;
+use std::path::PathBuf;
 
 #[derive(Debug, Deserialize)]
 pub struct General {
@@ -21,12 +22,8 @@ pub struct Setting {
     pub cases: Vec<Cases>,
 }
 
-const DEFAULT_PATH: &str = "./setting.toml";
-
 impl Setting {
-    pub fn read(setting_path: Option<&str>) -> Result<Self, Box<dyn std::error::Error>> {
-        let setting_path = setting_path.unwrap_or(DEFAULT_PATH);
-
+    pub fn read(setting_path: PathBuf) -> Result<Self, Box<dyn std::error::Error>> {
         match fs::read_to_string(setting_path) {
             Ok(setting_raw) => {
                 debug!("setting_raw: {:?}", &setting_raw);
