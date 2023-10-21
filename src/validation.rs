@@ -29,7 +29,7 @@ impl fmt::Display for ValidError {
 pub fn valid_total_percent(cases: &Vec<case::Case>) -> Result<(), Box<dyn Error>> {
     let total_percent = cases.iter().fold(0.0, |sum, p| sum + p.percent());
 
-    if 0.9999 <= total_percent && total_percent <= 1.0001 {
+    if (0.9999..=1.0001).contains(&total_percent) {
         debug!("validation.valid_total_percent() -> Ok; total_percent: {:?}", &total_percent);
         Ok(())
     } else {

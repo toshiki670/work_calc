@@ -1,7 +1,7 @@
 use std::env;
 
 use clap::Parser;
-use env_logger;
+
 use log::Level;
 use crate::work_hour::WorkHour;
 
