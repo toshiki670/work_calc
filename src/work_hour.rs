@@ -12,8 +12,8 @@ impl WorkHour {
         let value: i32 = (hour / WorkHour::QUARTER) as i32;
         let reminder: f64 = hour % WorkHour::QUARTER;
         Self {
-            value: value,
-            reminder: reminder,
+            value,
+            reminder,
         }
     }
 

@@ -22,11 +22,11 @@ impl Case {
         let work_hours_per_day = (total_hour / work_days as f64).hour();
 
         Case {
-            number: number,
-            percent: percent,
+            number,
+            percent,
             total_hour: total_hour * percent,
-            work_hours_per_day: work_hours_per_day,
-            remark: remark,
+            work_hours_per_day,
+            remark,
         }
     }
 
